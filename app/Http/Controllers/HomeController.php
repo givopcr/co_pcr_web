@@ -50,9 +50,16 @@ class HomeController extends Controller
 
             ],
 
+            'prodi' => [
+                ['nama' => 'Teknik Informatika', 'status' => 'Unggulan'],
+                ['nama' => 'Sistem Informasi', 'status' => 'Unggulan'],
+                ['nama' => 'Teknik Elektronika', 'status' => 'Reguler'],
+                ['nama' => 'Teknik Mekatronika', 'status' => 'Reguler'],
+                ['nama' => 'Akuntansi', 'status' => 'Reguler'],
+            ],
+
             'logo' => 'assets/logo_pcr.png'
         ];
-
         return view('home', $data);
     }
 
