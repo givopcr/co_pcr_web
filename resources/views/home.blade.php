@@ -1,84 +1,90 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Home - {{ $nama_kampus }}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-        }
-        img {
-            width: 200px;
-        }
-        section {
-            margin-bottom: 30px;
-        }
-    </style>
-</head>
-<body>
+@extends('layouts.app')
 
-    <h1>{{ $nama_kampus }}</h1>
-    <h3>{{ $slogan }}</h3>
+@section('title', 'Home | Politeknik Caltex Riau')
 
-    <img src="{{ asset($logo) }}" alt="Logo PCR">
+@section('content')
 
-    <section>
-        <h2>Visi</h2>
-        <ul>
-            @foreach ($visi as $item)
-                <li>{{ $item }}</li>
-            @endforeach
-        </ul>
-    </section>
+<!-- HERO -->
+<section class="bg-light py-5">
+    <div class="container text-center">
+        <h1 class="fw-bold">{{ $nama_kampus }}</h1>
+        <p class="text-muted fs-5">{{ $slogan }}</p>
+    </div>
+</section>
 
-    <section>
-        <h2>Misi</h2>
-        <ul>
-            @foreach ($misi as $item)
-                <li>{{ $item }}</li>
-            @endforeach
-        </ul>
-    </section>
+<!-- VISI & MISI -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
 
-    <section>
-        <h2>Sejarah Singkat</h2>
-        @foreach ($sejarah as $paragraf)
-            <p>{{ $paragraf }}</p>
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h4>Visi</h4>
+                        <ul>
+                            @foreach ($visi as $v)
+                                <li>{{ $v }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h4>Misi</h4>
+                        <ul>
+                            @foreach ($misi as $m)
+                                <li>{{ $m }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- SEJARAH -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h3>Sejarah Singkat</h3>
+
+        @foreach ($sejarah as $s)
+            <p>{{ $s }}</p>
         @endforeach
-    </section>
+    </div>
+</section>
 
-    <section>
-        <h2>Daftar Program Studi</h2>
+<!-- PRODI -->
+<section class="py-5">
+    <div class="container">
+        <h3>Daftar Program Studi</h3>
 
-        <table>
-            <thead>
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
                 <tr>
                     <th>Nama Program Studi</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($prodi as $item)
+                @foreach ($prodi as $p)
                     <tr>
-                        <td>{{ $item['nama'] }}</td>
-                        <td>{{ $item['status'] }}</td>
+                        <td>{{ $p['nama'] }}</td>
+                        <td>
+                            <span class="badge {{ $p['status'] == 'Unggulan' ? 'bg-success' : 'bg-secondary' }}">
+                                {{ $p['status'] }}
+                            </span>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
-        <style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-    }
-    th {
-        background-color: #f2f2f2;
-    }
-    th, td {
-        text-align: left;
-    }
-</style>
-</body>
-</html>
+
+    </div>
+</section>
+
+@endsection
