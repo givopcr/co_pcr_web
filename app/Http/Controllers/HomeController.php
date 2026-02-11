@@ -60,6 +60,7 @@ class HomeController extends Controller
 
             'logo' => 'assets/logo_pcr.png'
         ];
+        
         return view('home', $data);
     }
 
