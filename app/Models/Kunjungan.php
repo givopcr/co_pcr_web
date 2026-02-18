@@ -19,6 +19,7 @@ class Kunjungan extends Model
         'jumlah_peserta',
         'tanggal_kunjungan',
         'tujuan_kunjungan',
+        'foto',
         'status'
     ];
 
@@ -26,6 +27,12 @@ class Kunjungan extends Model
         'tanggal_kunjungan' => 'date',
         'jumlah_peserta' => 'integer',
     ];
+    
+    // Accessor untuk URL foto
+    public function getFotoUrlAttribute()
+    {
+        return $this->foto ? asset('storage/' . $this->foto) : null;
+    }
     
     //Scope untuk query yang sering digunakan
     public function scopePending($query)

@@ -15,3 +15,4 @@ Route::post('/kunjungan', [KunjunganController::class, 'store'])->name('kunjunga
 Route::get('/kunjungan-list', [KunjunganListController::class, 'index'])->name('kunjungan-list.index');
 Route::get('/kunjungan-list/filter/{status}', [KunjunganListController::class, 'filter'])->name('kunjungan-list.filter');
 Route::get('/kunjungan-list/search', [KunjunganListController::class, 'search'])->name('kunjungan-list.search');
+Route::delete('/kunjungan/{id}/hapus-foto', [KunjunganListController::class, 'hapusFoto'])->name('kunjungan-list.hapus-foto');

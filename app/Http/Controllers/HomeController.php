@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Kunjungan;
 
 class HomeController extends Controller
 {
@@ -12,6 +13,11 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $kunjunganTerbaru = Kunjungan::orderBy('created_at', 'desc')
+            ->whereNotNull('foto') // Hanya yang punya foto
+            ->limit(5)
+            ->get();
+
         $data = [
             'nama_kampus' => 'Politeknik Caltex Riau',
             'slogan' => 'Unggul, Mandiri, dan Berdaya Saing Global',
@@ -58,7 +64,8 @@ class HomeController extends Controller
                 ['nama' => 'Akuntansi', 'status' => 'Unggulan'],
             ],
 
-            'logo' => 'assets/logo_pcr.png'
+            'logo' => 'assets/logo_pcr.png',
+            'kunjunganTerbaru' => $kunjunganTerbaru
         ];
         
         return view('home', $data);

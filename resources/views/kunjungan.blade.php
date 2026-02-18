@@ -118,7 +118,7 @@
                 <p><i class="fas fa-info-circle"></i> <strong>Informasi Penting</strong>: Silakan isi formulir di bawah ini dengan data yang valid. Tim kami akan menghubungi Anda dalam waktu 1x24 jam untuk konfirmasi kunjungan.</p>
             </div>
 
-            <form action="{{ route('kunjungan.store') }}" method="POST">
+            <form action="{{ route('kunjungan.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="row">
@@ -164,9 +164,59 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="tujuan_kunjungan" class="form-label required">Tujuan Kunjungan</label>
-                    <textarea class="form-control @error('tujuan_kunjungan') is-invalid @enderror" id="tujuan_kunjungan" name="tujuan_kunjungan" rows="4" placeholder="Jelaskan tujuan kunjungan Anda ke kampus PCR">{{ old('tujuan_kunjungan') }}</textarea>
-                    @error('tujuan_kunjungan') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                <label for="tujuan_kunjungan" class="form-label required">Tujuan Kunjungan</label>
+                <textarea class="form-control @error('tujuan_kunjungan') is-invalid @enderror" id="tujuan_kunjungan" name="tujuan_kunjungan" rows="4" placeholder="Jelaskan tujuan kunjungan Anda ke kampus PCR">{{ old('tujuan_kunjungan') }}</textarea>
+                @error('tujuan_kunjungan')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+                    <!-- FIELD UPLOAD FOTO DENGAN PREVIEW -->
+                <div class="mb-4">
+                    <label for="foto" class="form-label required">Foto Dokumentasi</label>
+                    
+                    <!-- Area preview foto -->
+                    <div id="preview-container" class="mb-3 text-center" style="display: none;">
+                        <div class="position-relative d-inline-block">
+                            <img id="foto-preview" src="#" alt="Preview foto" 
+                                class="img-fluid rounded shadow" 
+                                style="max-height: 200px; border: 2px solid var(--pcr-blue);">
+                            <button type="button" id="hapus-foto" 
+                                    class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 rounded-circle"
+                                    style="width: 30px; height: 30px;"
+                                    onclick="resetFoto()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Input file -->
+                    <div class="input-group">
+                        <input type="file" class="form-control @error('foto') is-invalid @enderror" 
+                            id="foto" name="foto" accept="image/jpeg,image/png,image/jpg"
+                            onchange="previewFoto(this)">
+                        <span class="input-group-text bg-light">
+                            <i class="fas fa-camera" style="color: var(--pcr-blue);"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>Format: JPEG, PNG, JPG. Maksimal 2MB.
+                        </small>
+                        <small class="text-muted">
+                            <span id="file-size">0</span> KB / 2048 KB
+                        </small>
+                    </div>
+                    
+                    <!-- Progress bar upload (simulasi) -->
+                    <div class="progress mt-2" style="height: 5px; display: none;" id="upload-progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" id="progress-bar"></div>
+                    </div>
+                    
+                    @error('foto')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-4">
@@ -215,4 +265,90 @@
             </div>
         </div>
     </div>
+    
+    @push('scripts')
+    <script>
+    // Fungsi untuk preview foto sebelum upload
+    function previewFoto(input) {
+        const previewContainer = document.getElementById('preview-container');
+        const fotoPreview = document.getElementById('foto-preview');
+        const fileSize = document.getElementById('file-size');
+        const progressBar = document.getElementById('upload-progress');
+        const progress = document.getElementById('progress-bar');
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            const file = input.files[0];
+            
+            // Cek ukuran file (max 2MB)
+            const sizeInKB = (file.size / 1024).toFixed(2);
+            fileSize.textContent = sizeInKB;
+            
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Ukuran file terlalu besar! Maksimal 2MB');
+                input.value = '';
+                previewContainer.style.display = 'none';
+                return;
+            }
+            
+            // Tampilkan progress bar (simulasi)
+            progressBar.style.display = 'block';
+            let width = 0;
+            const interval = setInterval(function() {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        progressBar.style.display = 'none';
+                    }, 500);
+                } else {
+                    width += 10;
+                    progress.style.width = width + '%';
+                }
+            }, 50);
+            
+            reader.onload = function(e) {
+                fotoPreview.src = e.target.result;
+                previewContainer.style.display = 'block';
+            }
+            
+            reader.readAsDataURL(file);
+        } else {
+            resetFoto();
+        }
+    }
+
+    // Fungsi untuk reset/hapus foto
+    function resetFoto() {
+        const inputFile = document.getElementById('foto');
+        const previewContainer = document.getElementById('preview-container');
+        const fileSize = document.getElementById('file-size');
+        
+        inputFile.value = '';
+        previewContainer.style.display = 'none';
+        fileSize.textContent = '0';
+        
+        // Reset progress bar
+        document.getElementById('upload-progress').style.display = 'none';
+        document.getElementById('progress-bar').style.width = '0%';
+    }
+
+    // Validasi sebelum submit
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const foto = document.getElementById('foto');
+        const persetujuan = document.getElementById('persetujuan');
+        
+        if (!foto.files || foto.files.length === 0) {
+            e.preventDefault();
+            alert('Foto dokumentasi wajib diupload!');
+            return;
+        }
+        
+        if (!persetujuan.checked) {
+            e.preventDefault();
+            alert('Anda harus menyetujui persyaratan!');
+            return;
+        }
+    });
+    </script>
+    @endpush
 @endsection

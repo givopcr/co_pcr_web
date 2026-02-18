@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kunjungan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class KunjunganListController extends Controller
 {
@@ -76,5 +77,28 @@ class KunjunganListController extends Controller
         ];
 
         return view('kunjungan-list', $data);
+    }
+    
+    public function hapusFoto($id)
+    {
+        $kunjungan = Kunjungan::findOrFail($id);
+        
+        if ($kunjungan->foto) {
+            // Hapus file dari storage
+            Storage::disk('public')->delete($kunjungan->foto);
+            
+            // Update database (set foto menjadi null)
+            $kunjungan->update(['foto' => null]);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Foto berhasil dihapus'
+            ]);
+        }
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Foto tidak ditemukan'
+        ]);
     }
 }

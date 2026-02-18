@@ -335,6 +335,7 @@
                             <th>Jml</th>
                             <th>Tanggal</th>
                             <th>Status</th>
+                            <th>Foto</th> <!-- KOLOM BARU UNTUK FOTO -->
                             <th>Dibuat</th>
                         </tr>
                     </thead>
@@ -363,11 +364,37 @@
                                         </span>
                                     @endif
                                 </td>
+                                
+                                <!-- KOLOM FOTO DENGAN TOMBOL LIHAT DAN HAPUS -->
+                                <td>
+                                    @if($kunjungan->foto)
+                                        <div class="d-flex gap-1">
+                                            <!-- Tombol Lihat Foto -->
+                                            <a href="{{ asset('storage/' . $kunjungan->foto) }}" 
+                                            target="_blank" 
+                                            class="btn btn-sm btn-info" 
+                                            title="Lihat Foto">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            
+                                            <!-- TOMBOL HAPUS FOTO YANG ANDA TANYAKAN -->
+                                            <button class="btn btn-sm btn-danger hapus-foto" 
+                                                    data-id="{{ $kunjungan->id }}"
+                                                    title="Hapus Foto">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+                                <!-- END KOLOM FOTO -->
+                                
                                 <td>{{ $kunjungan->created_at->isoFormat('DD MMM YYYY') }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center py-5">
+                                <td colspan="10" class="text-center py-5">
                                     <i class="fas fa-folder-open fa-4x mb-3" style="color: #dee2e6;"></i>
                                     <h5 class="text-muted">Tidak ada data kunjungan</h5>
                                     <a href="{{ route('kunjungan.create') }}" class="btn btn-pcr mt-3">

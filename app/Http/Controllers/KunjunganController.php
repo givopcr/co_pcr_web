@@ -38,6 +38,7 @@ class KunjunganController extends Controller
             'jumlah_peserta' => 'required|integer|min:1|max:100',
             'tanggal_kunjungan' => 'required|date|after_or_equal:tomorrow',
             'tujuan_kunjungan' => 'required|string|max:500',
+            'foto' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'persetujuan' => 'required|accepted',
         ], [
             'nama.required' => 'Nama wajib diisi.',
@@ -52,6 +53,10 @@ class KunjunganController extends Controller
             'tanggal_kunjungan.required' => 'Tanggal kunjungan wajib diisi.',
             'tanggal_kunjungan.after_or_equal' => 'Tanggal kunjungan harus besok atau setelahnya.',
             'tujuan_kunjungan.required' => 'Tujuan kunjungan wajib diisi.',
+            'foto.required' => 'Foto dokumentasi wajib diupload.',
+            'foto.image' => 'File harus berupa gambar.',
+            'foto.mimes' => 'Format foto harus jpeg, png, atau jpg.',
+            'foto.max' => 'Ukuran foto maksimal 2MB.',
             'persetujuan.required' => 'Anda harus menyetujui persyaratan.',
             'persetujuan.accepted' => 'Anda harus menyetujui persyaratan.',
         ]);
@@ -66,6 +71,7 @@ class KunjunganController extends Controller
 
         // Simpan data ke database
         try {
+            $fotoPath = $request->file('foto')->store('foto-kunjungan', 'public');
             $kunjungan = Kunjungan::create([
                 'nama' => $request->nama,
                 'email' => $request->email,
@@ -74,6 +80,7 @@ class KunjunganController extends Controller
                 'jumlah_peserta' => $request->jumlah_peserta,
                 'tanggal_kunjungan' => $request->tanggal_kunjungan,
                 'tujuan_kunjungan' => $request->tujuan_kunjungan,
+                'foto' => $fotoPath,
                 'status' => 'pending',
             ]);
 
